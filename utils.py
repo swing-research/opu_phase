@@ -58,7 +58,8 @@ def ortho_procrustes(fixed, modify):
     M = fixed @ modify.T
     u, s, vh = np.linalg.svd(M)
     R = u @ vh
-    original = R @ (original - modify_mean @ np.ones([1, original.shape[1]])) + fixed_mean@np.ones([1, original.shape[1]])
+    original = R @ (original - modify_mean @ np.ones(
+            [1, original.shape[1]])) + fixed_mean@np.ones([1, original.shape[1]])
     return original[0] + 1j*original[1]
 
 def make_LXX(X):

@@ -82,9 +82,11 @@ def check_denoising():
             ind.append(max_anchors+1)
             D_quant = quant_D_oracles[:,:,ind][trial][ind,:]
             recovered_points = do_MDS(D_quant, i)
-            D_recon = make_LXX(np.vstack((np.real(recovered_points), np.imag(recovered_points))))
+            D_recon = make_LXX(np.vstack((np.real(recovered_points),
+                                          np.imag(recovered_points))))
             
-            X_0 = np.vstack((np.real(recovered_points), np.imag(recovered_points)))
+            X_0 = np.vstack((np.real(recovered_points), 
+                             np.imag(recovered_points)))
             W = (D_quant>0).astype('float') + np.eye(D_quant.shape[0])
             X, _ = gradient_descent_X(D_quant, X_0, W)
             recovered_points = X[0] + 1j*X[1]
@@ -92,9 +94,12 @@ def check_denoising():
             
             D_original = all_D_oracles[:,:,ind][trial][ind,:]
             
-            x_snrs[trial, 0,i-2] = -20*np.log10(np.abs(D_original[0,-1]-D_quant[0,-1])/(D_original[0,-1]))
-            x_snrs[trial, 1,i-2] = -20*np.log10(np.abs(D_original[0,-1]-D_recon[0,-1])/(D_original[0,-1]))
-            x_snrs[trial, 2,i-2] = -20*np.log10(np.abs(D_original[0,-1]-D_recon_2[0,-1])/(D_original[0,-1]))
+            x_snrs[trial, 0,i-2] = -20*np.log10(
+                    np.abs(D_original[0,-1]-D_quant[0,-1])/(D_original[0,-1]))
+            x_snrs[trial, 1,i-2] = -20*np.log10(
+                    np.abs(D_original[0,-1]-D_recon[0,-1])/(D_original[0,-1]))
+            x_snrs[trial, 2,i-2] = -20*np.log10(n
+                  p.abs(D_original[0,-1]-D_recon_2[0,-1])/(D_original[0,-1]))
     
     x_bits = np.mean(x_snrs, axis=0) / 6.02
     
