@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+from utils import do_MDS, make_LXX
+
 def get_D(max_anchors):
     n = 100 # signal length
     k = 1    # number of signals to recover
@@ -32,26 +34,6 @@ def get_D(max_anchors):
     D[m + 1, 0] = D[0, m + 1]
     
     return D
-
-def do_MDS(D, number_of_anchors):
-    m = number_of_anchors
-    J = np.eye(m + 2) - 1. / (m + 2) * np.ones((m + 2, m + 2))
-    G = -1/2 * np.dot(J, D).dot(J)
-    U, s, VT = np.linalg.svd(G)
-    Z_est_R2 = np.dot(np.diag(np.sqrt(s[:2])), VT[:2, :])
-    Z_est_cpx = Z_est_R2[0, :] + 1j*Z_est_R2[1, :]
-    
-    # translate the origin back at (0, 0)
-    Z_est_cpx -= Z_est_cpx[m + 1]
-    
-    return Z_est_cpx
-    
-def make_LXX(X):
-    e = np.ones([X.shape[1],1])
-    G = X.T @ X
-    diag_vec = np.diag(G).reshape([-1,1])
-    L =  diag_vec @ e.T + e @ diag_vec.T - 2*G
-    return L
     
 def gradient_descent_X(D, X_0, W):
     lr = 0.005
@@ -60,7 +42,6 @@ def gradient_descent_X(D, X_0, W):
     if (np.isinf(lr)):
         lr = 0
     n_iter = 30
-    lam = 0
     
     N = X_0.shape[1]
     e = np.ones([N,1])
@@ -71,7 +52,7 @@ def gradient_descent_X(D, X_0, W):
         L = make_LXX(X)
         P = D - L
         P = W*P
-        grad = (1/N**2) * (8 * X @ (P - np.diag(np.diag(P @ e)) ) + lam*2*X)
+        grad = (1/N**2) * (8 * X @ (P - np.diag(np.diag(P @ e)) ))
         X -= lr*grad
 
     return X, L

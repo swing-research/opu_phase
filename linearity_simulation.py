@@ -12,7 +12,6 @@ def gradient_descent_X(D, X_0, W):
     if (np.isinf(lr)):
         lr = 0
     n_iter = 20
-    lam = 0
     
     N = X_0.shape[1]
     e = np.ones([N,1])
@@ -23,7 +22,7 @@ def gradient_descent_X(D, X_0, W):
         L = make_LXX(X)
         P = D - L
         P = W*P
-        grad = (1/N**2) * (8 * X @ (P - np.diag(np.diag(P @ e)) ) + lam*2*X)
+        grad = (1/N**2) * (8 * X @ (P - np.diag(np.diag(P @ e)) ))
         X -= lr*grad
 
     return X, L
