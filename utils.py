@@ -68,3 +68,18 @@ def make_LXX(X):
     L =  diag_vec @ e.T + e @ diag_vec.T - 2*G
 
     return L
+
+def make_D_ensembles(y, number_of_anchors):
+    num_elements = int((number_of_anchors+2)* (number_of_anchors+1) * 0.5)
+    
+    trials = y.shape[1]
+    dim = number_of_anchors+2
+    all_D_oracles_x = np.zeros([trials, dim, dim])
+    
+    ind = np.triu_indices(all_D_oracles_x[0].shape[0], k=1)
+    for i in range(trials):
+        data = y[0:num_elements,i]
+        all_D_oracles_x[i][ind] = data
+        all_D_oracles_x[i] += all_D_oracles_x[i].T
+        
+    return all_D_oracles_x
