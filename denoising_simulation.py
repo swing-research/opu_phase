@@ -37,10 +37,10 @@ def get_D(max_anchors):
     
 def gradient_descent_X(D, X_0, W):
     lr = 0.005
-    if (np.isnan(lr)):
-        lr = 0
-    if (np.isinf(lr)):
-        lr = 0
+#    if (np.isnan(lr)):
+#        lr = 0
+#    if (np.isinf(lr)):
+#        lr = 0
     n_iter = 30
     
     N = X_0.shape[1]
@@ -98,8 +98,8 @@ def check_denoising():
                     np.abs(D_original[0,-1]-D_quant[0,-1])/(D_original[0,-1]))
             x_snrs[trial, 1,i-2] = -20*np.log10(
                     np.abs(D_original[0,-1]-D_recon[0,-1])/(D_original[0,-1]))
-            x_snrs[trial, 2,i-2] = -20*np.log10(n
-                  p.abs(D_original[0,-1]-D_recon_2[0,-1])/(D_original[0,-1]))
+            x_snrs[trial, 2,i-2] = -20*np.log10(
+                    np.abs(D_original[0,-1]-D_recon_2[0,-1])/(D_original[0,-1]))
     
     x_bits = np.mean(x_snrs, axis=0) / 6.02
     
@@ -107,11 +107,15 @@ def check_denoising():
     
     plt.rcParams.update({'font.size': 14})
     plt.figure(figsize=(5,4))
-    plt.plot(anchors, x_bits[0], label='Measured')
-    plt.plot(anchors, x_bits[1], label='MDS')
-    plt.plot(anchors, x_bits[2], label='MDS-GD')
+    plt.plot(anchors, x_bits[1], label='MDS', linewidth=2.5)
+    plt.plot(anchors, x_bits[2], label='MDS-GD', color='r', 
+             linestyle=(0, (5, 1)), linewidth=2.5)
+    plt.plot(anchors, x_bits[0], label='Measured', color='k',
+             linestyle=(0, (3, 1, 1, 1)), linewidth=2.5)
     plt.ylabel('Average good bits')
     plt.xlabel('Number of anchors')
+    plt.xticks(np.arange(min(anchors), max(anchors)+1, 2.0))
+    plt.grid(which='major')
     plt.legend()
     plt.tight_layout()
 

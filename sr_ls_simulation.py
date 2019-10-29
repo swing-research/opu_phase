@@ -13,6 +13,8 @@ def phi_lam_forSR_LS(y_hat, D, f):
     return y_hat.T @ D @ y_hat + 2 * f.T @ y_hat
 
 def bisection_algo(D, A, b, f):
+    # Beck's bisection algorithm
+    
     evals, V  = np.linalg.eig(A.T @ A)
     evals = np.diag(evals**-0.5)
     ATA_half = V @ evals @ V.T
@@ -54,6 +56,8 @@ def bisection_algo(D, A, b, f):
     return M
 
 def SR_LS(anchor_positions, noisy_distances):
+    # this follows Beck's algorithm as cited in our paper
+    
     X_anchors = np.hstack((np.real(anchor_positions), np.imag(anchor_positions))).T
     
     A = np.hstack((-2*X_anchors.T, np.ones([X_anchors.shape[1],1])))
@@ -137,10 +141,12 @@ if __name__ == "__main__":
     plt.rcParams.update({'font.size': 14})
     plt.figure(figsize=(5,4))
     plt.plot(anchors_axis, np.mean(rel_errors_single, axis=0), 
-             label='Single point')
+             label='Single point', linewidth=2.5)
     plt.plot(anchors_axis, np.mean(rel_errors_group, axis=0), 
-             label='Group')
+             label='Group', color='r', linestyle=(0, (5, 1)), linewidth=2.5)
     plt.ylabel('SNR (dB)')
     plt.xlabel('Number of anchors')
+    plt.xticks(np.arange(min(anchors_axis), max(anchors_axis)+1, 2.0))
+    plt.grid(which='major')
     plt.legend()
     plt.tight_layout()
